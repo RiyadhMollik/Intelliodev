@@ -171,7 +171,7 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
               <p className="text-[#9292c9] text-sm">
-                © 2024 Intelliodev. All rights reserved.
+                © 2025 Intelliodev. All rights reserved.
               </p>
               <div className="flex items-center gap-6 text-sm">
                 <a href="#privacy" className="text-[#9292c9] hover:text-white transition-colors">

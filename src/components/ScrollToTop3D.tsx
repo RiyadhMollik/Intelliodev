@@ -131,7 +131,7 @@ const ScrollToTop3D = () => {
       ref={containerRef}
       onClick={scrollToTop}
       aria-label="Scroll to top"
-      className={`fixed bottom-6 right-6 h-14 w-14 rounded-full border border-white/10 bg-transparent backdrop-blur-md 
+      className={`fixed bottom-6 right-6 h-14 w-14 z-[9999] rounded-full border border-white/10 bg-transparent backdrop-blur-md 
                  shadow-lg shadow-indigo-500/20 transition-all duration-300 hover:scale-105 
                  ${visible ? 'opacity-100 translate-y-0' : 'pointer-events-none opacity-0 translate-y-4'}`}
     >
