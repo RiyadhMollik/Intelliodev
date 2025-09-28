@@ -1,4 +1,5 @@
 'use client'
+import ThreeServicesBackground from './ThreeServicesBackground'
 import { useState } from 'react'
 
 const Contact = () => {
@@ -23,8 +24,12 @@ const Contact = () => {
   }
 
   return (
-    <section className="px-4 md:px-10 lg:px-40 py-20" id="contact">
-      <div className="max-w-4xl mx-auto">
+    <section className="relative px-4 md:px-10 lg:px-40 py-20" id="contact">
+      <div className="absolute inset-0 z-0">
+        <ThreeServicesBackground />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0b0b14]/20 to-[#0b0b14]" />
+      </div>
+      <div className="relative z-10 max-w-4xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold tracking-tighter">Contact Us</h2>
           <p className="text-lg text-indigo-200 mt-2">

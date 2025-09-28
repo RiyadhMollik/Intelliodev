@@ -1,3 +1,5 @@
+import ThreeServicesBackground from './ThreeServicesBackground'
+
 const Services = () => {
   const services = [
     {
@@ -39,24 +41,36 @@ const Services = () => {
   ]
 
   return (
-    <section className="px-4 md:px-10 lg:px-40 py-20" id="services">
-      <div className="text-center mb-12">
+    <section className="relative px-4 md:px-10 lg:px-40 py-20" id="services">
+      {/* Three.js background */}
+      <div className="absolute inset-0 z-0">
+        <ThreeServicesBackground />
+        {/* soft gradient overlay to blend with page */}
+        <div className="absolute inset-0  pointer-events-none" />
+      </div>
+      <div className="relative z-10 text-center mb-12">
         <h2 className="text-4xl font-bold leading-tight tracking-tighter">Our Services</h2>
         <p className="text-lg text-indigo-200 mt-2 max-w-3xl mx-auto">
           Comprehensive Solutions for Your Digital Transformation. From AI-driven automation to custom software development, we provide end-to-end solutions.
         </p>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {services.map((service, index) => (
           <div 
             key={index}
-            className="flex flex-col gap-4 rounded-lg border border-[#323267] bg-[#191933] p-6 hover:border-[#6366F1] hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-300 transform hover:-translate-y-1"
+            className="group relative flex flex-col gap-4 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-6 
+                       hover:border-indigo-400/40 hover:shadow-2xl hover:shadow-indigo-500/15 transition-all duration-300 
+                       will-change-transform hover:-translate-y-1"
+            style={{ perspective: '800px' }}
           >
-            <div className="text-[#6366F1]">
+            {/* glow ring */}
+            <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-r from-cyan-400/10 via-indigo-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 blur transition" />
+            <div className="relative text-[#6366F1] [transform-style:preserve-3d] group-hover:[transform:rotateX(6deg)_rotateY(-6deg)] transition-transform duration-300">
               {service.icon}
             </div>
-            <h3 className="text-xl font-bold">{service.title}</h3>
-            <p className="text-[#9292c9] text-sm">{service.description}</p>
+            <h3 className="text-xl font-bold [transform-style:preserve-3d] group-hover:[transform:translateZ(8px)] transition-transform">{service.title}</h3>
+            <p className="text-[#c2c2f0]/80 text-sm [transform-style:preserve-3d] group-hover:[transform:translateZ(6px)] transition-transform">{service.description}</p>
+            <div className="mt-2 h-px w-full bg-gradient-to-r from-transparent via-indigo-400/40 to-transparent opacity-70" />
           </div>
         ))}
       </div>

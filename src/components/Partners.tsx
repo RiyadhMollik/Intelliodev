@@ -1,4 +1,5 @@
 import LogoLoop from './LogoLoop'
+import ThreeServicesBackground from './ThreeServicesBackground'
 import { SiReact, SiNextdotjs, SiTypescript, SiTailwindcss, SiNodedotjs, SiVercel } from 'react-icons/si'
 
 const Partners = () => {
@@ -47,8 +48,12 @@ const Partners = () => {
   ]
 
   return (
-    <section className="px-4 md:px-10 lg:px-40 py-20 bg-[#111122]">
-      <div className="text-center mb-12">
+    <section className="relative px-4 md:px-10 lg:px-40 py-20">
+      <div className="absolute inset-0 z-0">
+        <ThreeServicesBackground />
+        <div className="absolute inset-0 " />
+      </div>
+      <div className="relative z-10 text-center mb-12">
         <h2 className="text-4xl font-bold leading-tight tracking-tighter">Our Technology Stack</h2>
         <p className="text-lg text-indigo-200 mt-2 max-w-3xl mx-auto">
           We use cutting-edge technologies to build modern, scalable solutions.
@@ -56,7 +61,7 @@ const Partners = () => {
       </div>
       
       {/* Tech Stack LogoLoop */}
-      <div className="mb-16" style={{ height: '80px', position: 'relative', overflow: 'hidden' }}>
+  <div className="relative z-10 mb-16" style={{ height: '80px', position: 'relative', overflow: 'hidden' }}>
         <LogoLoop
           logos={techLogos}
           speed={120}
@@ -91,8 +96,8 @@ const Partners = () => {
           fadeOut
           fadeOutColor="#111122"
           ariaLabel="Trusted partners"
-        />
-      </div> */}
+        /> */}
+      {/* </div> */}
     </section>
   )
 }

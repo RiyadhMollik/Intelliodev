@@ -1,4 +1,5 @@
 'use client'
+import ThreeServicesBackground from './ThreeServicesBackground'
 import { useState } from 'react'
 
 const FAQ = () => {
@@ -28,14 +29,18 @@ const FAQ = () => {
   )
 
   return (
-    <section className="px-4 md:px-10 lg:px-40 py-20" id="faq">
-      <div className="text-center mb-12">
+    <section className="relative px-4 md:px-10 lg:px-40 py-20" id="faq">
+      <div className="absolute inset-0 z-0">
+        <ThreeServicesBackground />
+        <div className="absolute inset-0" />
+      </div>
+      <div className="relative z-10 text-center mb-12">
         <h2 className="text-4xl font-bold leading-tight tracking-tighter">Frequently Asked Questions</h2>
         <p className="text-lg text-indigo-200 mt-2 max-w-3xl mx-auto">
           Have questions? We have answers. If you can&apos;t find what you&apos;re looking for, feel free to contact us.
         </p>
       </div>
-      <div className="max-w-4xl mx-auto flex flex-col gap-4">
+      <div className="relative z-10 max-w-4xl mx-auto flex flex-col gap-4">
         {faqs.map((faq, index) => (
           <div 
             key={index}

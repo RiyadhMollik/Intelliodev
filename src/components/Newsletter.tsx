@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import ThreeServicesBackground from './ThreeServicesBackground'
 
 const Newsletter = () => {
   const [email, setEmail] = useState('')
@@ -12,8 +13,12 @@ const Newsletter = () => {
   }
 
   return (
-    <section className="bg-[#111122] px-4 md:px-10 lg:px-40 py-20">
-      <div className="max-w-4xl mx-auto text-center">
+    <section className="relative  px-4 md:px-10 lg:px-40 py-20">
+      <div className="absolute inset-0 z-0">
+        <ThreeServicesBackground />
+        <div className="absolute inset-0" />
+      </div>
+      <div className="relative z-10 max-w-4xl mx-auto text-center">
         <h2 className="text-4xl font-bold tracking-tighter">Stay Updated with Our Latest Innovations</h2>
         <p className="text-lg text-indigo-200 mt-2">
           Subscribe to our newsletter to receive updates on our latest projects, insights, and industry trends.

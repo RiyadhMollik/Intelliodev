@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useRef, ReactNode } from 'react'
+import Image from 'next/image'
 
 interface Logo {
   node?: ReactNode
@@ -104,7 +105,7 @@ const LogoLoop = ({
     const content = logo.node ? (
       <span className="logoloop__node">{logo.node}</span>
     ) : logo.src ? (
-      <img src={logo.src} alt={logo.alt || ''} />
+      <Image src={logo.src} alt={logo.alt || ''} width={100} height={100} />
     ) : null
 
     if (logo.href) {
