@@ -34,7 +34,7 @@ const ServicesDiagram = () => {
   ]
 
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative overflow-hidden hidden md:block lg:block">
       {/* Unified Three.js background */}
       <div className="absolute inset-0 z-0">
         <ThreeServicesBackground />
