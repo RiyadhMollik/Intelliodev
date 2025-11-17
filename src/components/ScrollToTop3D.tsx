@@ -66,14 +66,24 @@ const ScrollToTop3D = () => {
     arcRef.current = arc
 
     const clock = new THREE.Clock()
-    const animate = () => {
+    let lastFrameTime = 0
+    const targetFPS = 30
+    const frameInterval = 1000 / targetFPS
+    
+    const animate = (currentTime: number) => {
+      rafRef.current = requestAnimationFrame(animate)
+      
+      // Throttle rendering
+      const deltaTime = currentTime - lastFrameTime
+      if (deltaTime < frameInterval) return
+      lastFrameTime = currentTime - (deltaTime % frameInterval)
+      
       const t = clock.getElapsedTime()
       if (!reducedMotion) {
         // Subtle breathing via alpha on the track for life; no planes to avoid squares
         track.material.opacity = 0.18 + Math.abs(Math.sin(t * 2)) * 0.07
       }
       renderer.render(scene, camera)
-      rafRef.current = requestAnimationFrame(animate)
     }
     rafRef.current = requestAnimationFrame(animate)
 

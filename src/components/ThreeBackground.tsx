@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 
 /**
@@ -9,6 +9,7 @@ import * as THREE from 'three'
  * - Respects prefers-reduced-motion
  * - Handles resize / DPR
  * - Offloads to requestAnimationFrame
+ * - Pauses rendering when not visible
  */
 export default function ThreeBackground() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -18,10 +19,25 @@ export default function ThreeBackground() {
   const particlesRef = useRef<THREE.Points | null>(null)
   const rafRef = useRef<number | null>(null)
   const texRef = useRef<THREE.Texture | null>(null)
+  const [isVisible, setIsVisible] = useState(false)
 
   const reducedMotion = useMemo(() =>
     typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
   , [])
+
+  // Intersection Observer to pause rendering when not visible
+  useEffect(() => {
+    const container = containerRef.current
+    if (!container) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { threshold: 0, rootMargin: '100px' }
+    )
+    
+    observer.observe(container)
+    return () => observer.disconnect()
+  }, [])
 
   useEffect(() => {
     const container = containerRef.current
@@ -45,7 +61,7 @@ export default function ThreeBackground() {
 
   // Particles geometry
     const geometry = new THREE.BufferGeometry()
-    const count = 800 // reduced count for subtlety
+    const count = 400 // Reduced from 800 for better performance
     const positions = new Float32Array(count * 3)
     const colors = new Float32Array(count * 3)
 
@@ -121,9 +137,15 @@ export default function ThreeBackground() {
     group.add(particles)
     scene.add(group)
 
-    // Mouse parallax
+    // Mouse parallax with throttling
     const target = new THREE.Vector2(0, 0)
+    let mouseMoveTimeout: NodeJS.Timeout | null = null
     const onPointerMove = (e: PointerEvent) => {
+      if (mouseMoveTimeout) return // Throttle mouse events
+      mouseMoveTimeout = setTimeout(() => {
+        mouseMoveTimeout = null
+      }, 16) // ~60fps throttle
+      
       const w = window.innerWidth || 1
       const h = window.innerHeight || 1
       const x = e.clientX / w
@@ -131,7 +153,7 @@ export default function ThreeBackground() {
       target.x = (x - 0.5) * 2
       target.y = (y - 0.5) * 2
     }
-    window.addEventListener('pointermove', onPointerMove)
+    window.addEventListener('pointermove', onPointerMove, { passive: true })
 
     // Resize
     const onResize = () => {
@@ -146,7 +168,21 @@ export default function ThreeBackground() {
 
     // Animate
     const clock = new THREE.Clock()
-    const animate = () => {
+    let lastFrameTime = 0
+    const targetFPS = 30 // Limit to 30fps for better performance
+    const frameInterval = 1000 / targetFPS
+    
+    const animate = (currentTime: number) => {
+      rafRef.current = requestAnimationFrame(animate)
+      
+      // Skip rendering if not visible
+      if (!isVisible) return
+      
+      // Throttle rendering to target FPS
+      const deltaTime = currentTime - lastFrameTime
+      if (deltaTime < frameInterval) return
+      lastFrameTime = currentTime - (deltaTime % frameInterval)
+      
       const t = clock.getElapsedTime()
       // Slow rotation
       if (!reducedMotion) {
@@ -159,7 +195,6 @@ export default function ThreeBackground() {
       camera.lookAt(0, 0, 0)
 
       renderer.render(scene, camera)
-      rafRef.current = requestAnimationFrame(animate)
     }
     rafRef.current = requestAnimationFrame(animate)
 
@@ -178,7 +213,7 @@ export default function ThreeBackground() {
         texRef.current = null
       }
     }
-  }, [reducedMotion])
+  }, [reducedMotion, isVisible])
 
   return (
     <div ref={containerRef} className="absolute inset-0 pointer-events-none">

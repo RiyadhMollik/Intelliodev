@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 
 // Limit active WebGL contexts to avoid browser context exhaustion
@@ -12,16 +12,32 @@ const MAX_WEBGL = 3
  * Subtle particle field tailored for the Services section
  * - Slight orbital motion, light parallax
  * - Respects reduced motion
+ * - Pauses when not visible
  */
 export default function ThreeServicesBackground() {
   const containerRef = useRef<HTMLDivElement>(null)
   const rafRef = useRef<number | null>(null)
   const texRef = useRef<THREE.Texture | null>(null)
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null)
+  const [isVisible, setIsVisible] = useState(false)
 
   const reducedMotion = useMemo(() =>
     typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
   , [])
+
+  // Intersection Observer to pause rendering when not visible
+  useEffect(() => {
+    const container = containerRef.current
+    if (!container) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { threshold: 0, rootMargin: '100px' }
+    )
+    
+    observer.observe(container)
+    return () => observer.disconnect()
+  }, [])
 
   useEffect(() => {
     const container = containerRef.current
@@ -58,7 +74,7 @@ export default function ThreeServicesBackground() {
 
     // Geometry
     const geometry = new THREE.BufferGeometry()
-    const count = 600 // reduced for subtlety
+    const count = 300 // Reduced from 600 for better performance
     const positions = new Float32Array(count * 3)
     const colors = new Float32Array(count * 3)
 
@@ -136,7 +152,7 @@ export default function ThreeServicesBackground() {
       target.x = (e.clientX / w - 0.5) * 2
       target.y = (e.clientY / h - 0.5) * 2
     }
-    window.addEventListener('pointermove', onMove)
+    window.addEventListener('pointermove', onMove, { passive: true })
 
     const onResize = () => {
       const w = container.clientWidth
@@ -149,7 +165,21 @@ export default function ThreeServicesBackground() {
     ro.observe(container)
 
     const clock = new THREE.Clock()
-    const animate = () => {
+    let lastFrameTime = 0
+    const targetFPS = 30
+    const frameInterval = 1000 / targetFPS
+    
+    const animate = (currentTime: number) => {
+      rafRef.current = requestAnimationFrame(animate)
+      
+      // Skip rendering if not visible
+      if (!isVisible) return
+      
+      // Throttle rendering to target FPS
+      const deltaTime = currentTime - lastFrameTime
+      if (deltaTime < frameInterval) return
+      lastFrameTime = currentTime - (deltaTime % frameInterval)
+      
       const t = clock.getElapsedTime()
 
       if (!reducedMotion) {
@@ -162,7 +192,6 @@ export default function ThreeServicesBackground() {
       camera.lookAt(0, 0, 0)
 
       renderer.render(scene, camera)
-      rafRef.current = requestAnimationFrame(animate)
     }
     rafRef.current = requestAnimationFrame(animate)
 
@@ -185,7 +214,7 @@ export default function ThreeServicesBackground() {
         texRef.current = null
       }
     }
-  }, [reducedMotion])
+  }, [reducedMotion, isVisible])
 
   return <div ref={containerRef} className="absolute inset-0 pointer-events-none" />
 }

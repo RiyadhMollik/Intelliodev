@@ -19,10 +19,16 @@ import Security from '@/components/Security'
 
 export default function Home() {
   return (
-    <div className="relative flex h-auto min-h-screen w-full flex-col bg-[#0D0D1A] text-white" style={{ fontFamily: '"Space Grotesk", "Noto Sans", sans-serif' }}>
+    <div 
+      className="relative flex h-auto min-h-screen w-full flex-col bg-[#0D0D1A] text-white" 
+      style={{ 
+        fontFamily: '"Space Grotesk", "Noto Sans", sans-serif',
+        willChange: 'scroll-position'
+      }}
+    >
       <div className="layout-container flex h-full grow flex-col">
         <Header />
-        <main className="flex-1">
+        <main className="flex-1" style={{ contain: 'layout style paint' }}>
           <Hero />
           <Services />
           <Customers />

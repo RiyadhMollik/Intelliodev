@@ -141,7 +141,14 @@ export default function ChromaGrid({
     if (url) window.open(url, '_blank', 'noopener,noreferrer')
   }
 
+  // Throttle mouse move for better performance
+  let cardMoveTimeout: NodeJS.Timeout | null = null
   const handleCardMove = (e: React.MouseEvent<HTMLElement>) => {
+    if (cardMoveTimeout) return
+    cardMoveTimeout = setTimeout(() => {
+      cardMoveTimeout = null
+    }, 16) // ~60fps throttle
+    
     const card = e.currentTarget as HTMLElement
     const rect = card.getBoundingClientRect()
     const x = e.clientX - rect.left
